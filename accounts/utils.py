@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 import os
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-
+from twilio.rest import Client
 # import random
 # from django.core.mail import EmailMessage
 # #from .models import User, OneTimePassword
@@ -35,7 +35,7 @@ from sendgrid.helpers.mail import Mail
 
 def send_normal_email(data):
     message = Mail(
-        from_email='citizenconnect25@gmail.com',
+        from_email='citizenconnect@mail.com',
         to_emails=data['to_email'],
         subject=data['email_subject'],
         plain_text_content=data['email_body'])

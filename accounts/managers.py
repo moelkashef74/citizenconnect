@@ -19,7 +19,7 @@ class UserManager(BaseUserManager):
         )
         validator(phone_number)
         phone_number_digits = ''.join(filter(str.isdigit, phone_number))
-        if len(phone_number_digits) not in (10, 11):
+        if len(phone_number_digits) not in (10, 14):
             raise ValueError(_("Please enter a valid phone number."))
 
     def create_user(self, first_name, last_name, email_or_phone, id, password, **extra_fields):

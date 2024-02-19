@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.generics import GenericAPIView
-from .serializers import UserRegisterSerializer, LoginSerializer, LogoutUserSerializer
+from .serializers import UserRegisterSerializer, LoginSerializer, LogoutUserSerializer 
 from rest_framework.response import Response
 from rest_framework import status
 from django.utils.encoding import smart_str
@@ -10,6 +10,8 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import smart_str, DjangoUnicodeDecodeError
 from accounts.serializers import PasswordResetRequestSerializer, SetNewPasswordSerializer
 from rest_framework.permissions import IsAuthenticated
+
+
 
 # from .utils import send_code_to_user
 # from accounts.models import OneTimePassword
@@ -106,3 +108,4 @@ class LogoutApiView(GenericAPIView):
         serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
  
+

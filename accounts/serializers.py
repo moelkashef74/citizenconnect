@@ -117,14 +117,14 @@ class PasswordResetRequestSerializer(serializers.Serializer):
         # Determine if email or phone number
         if '@' in email_or_phone:
             email = email_or_phone
-            if User.objects.filter(email=email).exists():
-                user = User.objects.get(email=email)
+            if User.objects.filter(email_or_phone=email).exists():
+                user = User.objects.get(email_or_phone=email)
             else:
                 raise serializers.ValidationError("User with this email does not exist")
         else:
             phone_number = email_or_phone
-            if User.objects.filter(phone_number=phone_number).exists():
-                user = User.objects.get(phone_number=phone_number)
+            if User.objects.filter(email_or_phone=phone_number).exists():
+                user = User.objects.get(email_or_phone=phone_number)
             else:
                 raise serializers.ValidationError("User with this phone number does not exist")
 
@@ -137,7 +137,7 @@ class PasswordResetRequestSerializer(serializers.Serializer):
         data = {
             'email_body': email_body,
             'email_subject': "Reset your Password",
-            'to_email': user.email
+            'to_email': user.email_or_phone
         }
         send_normal_email(data)
 
