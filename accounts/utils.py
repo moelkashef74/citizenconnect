@@ -41,7 +41,7 @@ def send_normal_email(data):
         plain_text_content=data['email_body'])
 
     try:
-        sg = SendGridAPIClient(settings.EMAIL_HOST_PASSWORD)
+        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
         response = sg.send(message)
         print(response.status_code)
         print(response.body)
