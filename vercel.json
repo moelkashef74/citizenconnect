@@ -1,8 +1,8 @@
 {
+  "src": "api/wsgi.py",
   "functions": {
     "api/**/*.py": {
-      "runtime": "python3.10",
-      "src": "api/wsgi.py"
+      "runtime": "python3.10"
     }
   },
   "routes": [
