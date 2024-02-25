@@ -1,13 +1,14 @@
 {
-  "functions": {
-    "api/**/*.py": {
-      "runtime": "python3.10.0"
+  "builds": [
+    {
+      "src": "django_app_name/wsgi.py",
+      "use": "@vercel/python"
     }
-  },
+  ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "api/wsgi.py"
+      "dest": "django_app_name/wsgi.py"
     }
   ]
 }
