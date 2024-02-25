@@ -4,7 +4,6 @@ from django.core.mail import send_mail
 import os
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-from twilio.rest import Client
 # import random
 # from django.core.mail import EmailMessage
 # #from .models import User, OneTimePassword

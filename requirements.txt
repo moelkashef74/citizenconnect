@@ -15,16 +15,13 @@ django-environ==0.11.2
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.1
 frozenlist==1.4.1
-gunicorn==21.2.0
 idna==3.6
 multidict==6.0.5
-numpy==1.26.4
 packaging==23.2
 psycopg2-binary==2.9.9
 pyarrow==15.0.0
 pycparser==2.21
 PyJWT==2.8.0
-pylance==0.9.15
 pyotp==2.9.0
 python-dotenv==1.0.1
 python-http-client==3.3.7
@@ -33,7 +30,6 @@ requests==2.31.0
 sendgrid==6.11.0
 sqlparse==0.4.4
 starkbank-ecdsa==2.2.0
-twilio==8.13.0
 typing_extensions==4.9.0
 tzdata==2024.1
 urllib3==2.2.0
