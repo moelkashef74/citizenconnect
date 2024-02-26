@@ -172,7 +172,7 @@ class SetNewPasswordSerializer(serializers.Serializer):
             user.save()
             return user
         except Exception as e:
-            raise AuthenticationFailed("password": "Passwords do not match")
+            raise AuthenticationFailed("Passwords do not match")
 
 
 class LogoutUserSerializer(serializers.Serializer):
