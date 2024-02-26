@@ -86,10 +86,10 @@ class LoginSerializer(serializers.ModelSerializer):
         # Determine if email or phone number
         if '@' in email_or_phone:
             email = email_or_phone
-            user = authenticate(request, email=email, password=password)
+            user = authenticate(request, email_or_phone=email, password=password)
         else:
             phone_number = email_or_phone
-            user = authenticate(request, phone_number=phone_number, password=password)
+            user = authenticate(request, email_or_phone=phone_number, password=password)
 
         if not user:
             raise AuthenticationFailed("Invalid credentials, please try again")
