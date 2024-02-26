@@ -164,19 +164,15 @@ class SetNewPasswordSerializer(serializers.Serializer):
             user_id = force_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(id=user_id)
             if password != confirm_password:
-                    raise AuthenticationFailed("Passwords do not match")
-                    
+                raise serializers.ValidationError("Passwords do not match")
             if not PasswordResetTokenGenerator().check_token(user, token):
-                    raise AuthenticationFailed("Reset link is invalid or has expired", 401)
-                
+                raise serializers.ValidationError("Reset link is invalid or has expired", code='token_invalid')
+
             user.set_password(password)
             user.save()
             return user
-        except User.DoesNotExist:
-            raise AuthenticationFailed("User does not exist")
-        except Exception as e:
-            raise AuthenticationFailed("An error occurred during password reset")
-
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            raise serializers.ValidationError("Link is invalid or has expired")
 
 class LogoutUserSerializer(serializers.Serializer):
     refresh_token = serializers.CharField()
