@@ -31,7 +31,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     
     def __str__(self):
-        return self.email_or_phone or 'Unknown User'
+        return self.email_or_phone
     
     @property
     def get_full_name(self):

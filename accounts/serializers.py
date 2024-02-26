@@ -97,7 +97,7 @@ class LoginSerializer(serializers.ModelSerializer):
         tokens = user.tokens()
         return {
             'email_or_phone': email_or_phone,
-            'full_name': user.get_full_name(),
+            'full_name': user.get_full_name,
             'access_token': str(tokens.get('access')),
             'refresh_token': str(tokens.get('refresh'))
         }
