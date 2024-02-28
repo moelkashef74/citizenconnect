@@ -11,7 +11,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
 
 from django.urls import reverse
-
+from django.db import IntegrityError
 from .utils import send_normal_email
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
@@ -37,33 +37,37 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        first_name = validated_data.get('first_name')
-        last_name = validated_data.get('last_name')
-        email_or_phone = validated_data.get('email_or_phone')
-        id = validated_data.get('id')
-        password = validated_data.get('password')
+        try:
+            first_name = validated_data.get('first_name')
+            last_name = validated_data.get('last_name')
+            email_or_phone = validated_data.get('email_or_phone')
+            id = validated_data.get('id')
+            password = validated_data.get('password')
 
-        # Determine if email or phone number
-        if '@' in email_or_phone:
-            email = email_or_phone
-            user = User.objects.create_user(
-                first_name=first_name,
-                last_name=last_name,
-                email_or_phone=email,
-                id=id,
-                password=password
-            )
-        else:
-            phone_number = email_or_phone
-            user = User.objects.create_user(
-                first_name=first_name,
-                last_name=last_name,
-                email_or_phone=phone_number,
-                id=id,
-                password=password
-            )
+            # Determine if email or phone number
+            if '@' in email_or_phone:
+                email = email_or_phone
+                user = User.objects.create_user(
+                    first_name=first_name,
+                    last_name=last_name,
+                    email_or_phone=email,
+                    id=id,
+                    password=password
+                )
+            else:
+                phone_number = email_or_phone
+                user = User.objects.create_user(
+                    first_name=first_name,
+                    last_name=last_name,
+                    email_or_phone=phone_number,
+                    id=id,
+                    password=password
+                )
 
-        return user
+            return user
+        except IntegrityError:
+            # Handle the case where the email or phone number already exists
+            raise serializers.ValidationError("Email or phone number already exists")
 
 
 
