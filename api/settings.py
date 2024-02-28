@@ -35,7 +35,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = ['*', '.vercel.app']
+ALLOWED_HOSTS = ['citizenconnectt.pythonanywhere.com']
 
 
 # Application definition
@@ -107,14 +107,14 @@ DATABASES = {
 
 AUTH_USER_MODEL='accounts.User'
 REST_FRAMEWORK = {
-    
+
     'NON_FIELD_ERRORS_KEY':'error',
     'DEFAULT_AUTHENTICATION_CLASSES': (
 
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
-    
+
 }
 
 SIMPLE_JWT = {

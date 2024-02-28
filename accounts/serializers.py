@@ -22,11 +22,11 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=68, min_length=6, write_only=True)
-    password2 = serializers.CharField(max_length=68, min_length=6, write_only=True)
+    password2 = serializers.CharField(max_length=68, write_only=True)
     email_or_phone = serializers.CharField(max_length=255)
 
     class Meta:
-        model = User 
+        model = User
         fields = ['first_name', 'last_name', 'email_or_phone', 'id', 'password', 'password2']
 
     def validate(self, attrs):
@@ -143,8 +143,8 @@ class PasswordResetRequestSerializer(serializers.Serializer):
 
         return super().validate(attrs)
 
-    
-    
+
+
 class SetNewPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=100, min_length=6, write_only=True)
     confirm_password = serializers.CharField(max_length=100, min_length=6, write_only=True)
