@@ -35,7 +35,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = ['citizenconnectt.pythonanywhere.com']
+ALLOWED_HOSTS = ['citizenconnectt.pythonanywhere.com','127.0.0.1','localhost']
 
 
 # Application definition
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'accounts.apps.AccountsConfig',
     'anymail',
+    'reports.apps.ReportsConfig'
 ]
 
 AUTH_USER_MODEL='accounts.User'
@@ -178,3 +179,5 @@ EMAIL_USE_TLS = True
 SENDGRID_API_KEY = env('SENDGRID_API_KEY')
 
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
