@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
-from .models import Problem
+from .models import Problem_cat_three
 from .serializers import ProblemSerializer
 
 class CreateProblemView(APIView):
@@ -18,5 +18,5 @@ class CreateProblemView(APIView):
     
     
 class ProblemTimelineView(ListAPIView):
-    queryset = Problem.objects.all().order_by('-created_at')
+    queryset = Problem_cat_three.objects.all().order_by('-created_at')
     serializer_class = ProblemSerializer
