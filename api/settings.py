@@ -185,7 +185,9 @@ SENDGRID_API_KEY = env('SENDGRID_API_KEY')
 
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = '/home/citizenconnectt/citizenconnect/media'
+
+
 
 LOGGING = {
     'version': 1,
