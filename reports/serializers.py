@@ -1,8 +1,15 @@
 # api/serializers.py
 from rest_framework import serializers
-from .models import Problem
+from .models import Report
 
-class ProblemSerializer(serializers.ModelSerializer):
+class ReportSerializer(serializers.ModelSerializer):
+
+    user = serializers.SerializerMethodField(method_name='get_user_email')
+
     class Meta:
-        model = Problem
-        fields = ['image', 'description', 'location', 'status', 'created_at']
+        model = Report
+        fields = ['id','image', 'description', 'location', 'status', 'created_at','user']
+
+        
+    def get_user_email(self, obj):
+        return obj.user.get_full_name

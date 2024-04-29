@@ -47,8 +47,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'knox',
+    'rest_framework_simplejwt.token_blacklist',
     'rest_framework',
-    'rest_framework.authtoken',
     'accounts.apps.AccountsConfig',
     'anymail',
     'reports.apps.ReportsConfig',
@@ -112,12 +113,14 @@ AUTH_USER_MODEL='accounts.User'
 REST_FRAMEWORK = {
 
     'NON_FIELD_ERRORS_KEY':'error',
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
+    
 
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+}
 
+REST_KNOX = {
+    'TOKEN_TTL': None,  # Tokens will never expire
+    # ... other Knox settings ...
 }
 
 SIMPLE_JWT = {
@@ -189,25 +192,25 @@ MEDIA_ROOT = '/home/citizenconnectt/citizenconnect/media'
 
 
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'myapp.log',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#         },
+#         'file': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'filename': 'myapp.log',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console', 'file'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#     },
+# }

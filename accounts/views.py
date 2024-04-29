@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.generics import GenericAPIView
-from .serializers import UserRegisterSerializer, LoginSerializer, LogoutUserSerializer,SetNewPasswordSerializer,PasswordResetRequestSerializer
+from .serializers import UserRegisterSerializer, LoginSerializer,SetNewPasswordSerializer,PasswordResetRequestSerializer, LogoutSerializer
+
 from rest_framework.response import Response
 from rest_framework import status
 from django.utils.encoding import smart_str
@@ -9,7 +10,8 @@ from .models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import smart_str, DjangoUnicodeDecodeError
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.views import APIView
+from knox.models import AuthToken
 
 
 # from .utils import send_code_to_user
@@ -55,12 +57,33 @@ class RegisterUserView(GenericAPIView):
 #             return Response({'message':'passcode not provided'}, status=status.HTTP_400_BAD_REQUEST)
         
 
-class LoginUserView(GenericAPIView):
-    serializer_class=LoginSerializer
-    def post(self, request):
-        serializer= self.serializer_class(data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+class LoginUserView(APIView):
+
+    def post(self, request, *args, **kwargs):
+        serializer = LoginSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            # Perform login actions
+            validated_data = serializer.validated_data
+            user = validated_data['user']
+            token = validated_data['token']
+            full_name = validated_data['full_name']
+            
+            # You can perform additional actions here if needed
+            
+            return Response({
+                'full_name': full_name,
+                'email': user.email_or_phone,
+                'token': token,
+                # Include additional fields as needed
+            }, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class TestAuthView(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def get(self, request):
+        return Response({'message':'you are authenticated'}, status=status.HTTP_200_OK)
+    
 
 
 class PasswordResetRequestView(GenericAPIView):
@@ -97,14 +120,15 @@ class SetNewPasswordView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         return Response({'success':True, 'message':"password reset is succesful"}, status=status.HTTP_200_OK)
 
-class LogoutApiView(GenericAPIView):
-    serializer_class=LogoutUserSerializer
+class LogoutUserView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = LogoutSerializer
 
     def post(self, request):
-        serializer=self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
  
 

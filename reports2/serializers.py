@@ -1,10 +1,10 @@
 # api/serializers.py
 from rest_framework import serializers
-from .models import Problem_cat_two
+from .models import Report_cat_two
 
 
 
-class ProblemSerializer(serializers.ModelSerializer):
+class ReportSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Problem_cat_two
-        fields = ['image', 'description', 'location', 'status', 'created_at']
+        model = Report_cat_two
+        fields = ['id','image', 'description', 'location', 'status', 'created_at']

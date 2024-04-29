@@ -3,20 +3,80 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
-from .models import Problem
-from .serializers import ProblemSerializer
+from .models import Report
+from .serializers import ReportSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
 
-class CreateProblemView(APIView):
+class CreateReportView(APIView):
     parser_classes = (MultiPartParser, FormParser)
+    permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
 
     def post(self, request, *args, **kwargs):
-        serializer = ProblemSerializer(data=request.data)
+        serializer = ReportSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
+            # Assign the report to the current user before saving
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+class ApproveReportView(APIView):
+    def post(self, request, Report_id, format=None):
+        try:
+            Report = Report.objects.get(id=Report_id)
+        except Report.DoesNotExist:
+            return Response(status=404)
+
+        if Report.status != "reported":
+            return Response({"error": "Report is not in reported status"}, status=400)
+
+        Report.status = "approved"
+        Report.save()
+
+        return Response(status=200)
+
+class RejectReportView(APIView):
+    def post(self, request, Report_id, format=None):
+        try:
+            Report = Report.objects.get(id=Report_id)
+        except Report.DoesNotExist:
+            return Response(status=404)
+
+        if Report.status != "reported":
+            return Response({"error": "Report is not in reported status"}, status=400)
+
+        Report.status = "rejected"
+        Report.save()
+
+        return Response(status=200)
+
+class SolvedReportView(APIView):
+    def post(self, request, Report_id, format=None):
+        try:
+            Report = Report.objects.get(id=Report_id)
+        except Report.DoesNotExist:
+            return Response(status=404)
+
+        if Report.status != "approved":
+            return Response({"error": "Report is not in reported status"}, status=400)
+
+        Report.status = "solved"
+        Report.save()
+
+        return Response(status=200)           
     
-class ProblemTimelineView(ListAPIView):
-    queryset = Problem.objects.all().order_by('-created_at')
-    serializer_class = ProblemSerializer
+class SolvedTimelineView(ListAPIView):
+    queryset = Report.objects.filter(status="solved").order_by('-created_at')
+    serializer_class = ReportSerializer
+
+
+class ReportedTimelineView(ListAPIView):
+    queryset = Report.objects.filter(status="reported").order_by('-created_at')
+    serializer_class = ReportSerializer
+
+
+class ApprovedTimelineView(ListAPIView):
+    queryset = Report.objects.filter(status="approved").order_by('-created_at')
+    serializer_class = ReportSerializer
