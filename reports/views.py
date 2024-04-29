@@ -20,53 +20,53 @@ class CreateReportView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 class ApproveReportView(APIView):
     def post(self, request, Report_id, format=None):
         try:
-            Report = Report.objects.get(id=Report_id)
+            report = Report.objects.get(id=Report_id)
         except Report.DoesNotExist:
             return Response(status=404)
 
-        if Report.status != "reported":
+        if report.status != "reported":
             return Response({"error": "Report is not in reported status"}, status=400)
 
-        Report.status = "approved"
-        Report.save()
+        report.status = "approved"
+        report.save()
 
         return Response(status=200)
 
 class RejectReportView(APIView):
     def post(self, request, Report_id, format=None):
         try:
-            Report = Report.objects.get(id=Report_id)
+            report = Report.objects.get(id=Report_id)
         except Report.DoesNotExist:
             return Response(status=404)
 
-        if Report.status != "reported":
+        if report.status != "reported":
             return Response({"error": "Report is not in reported status"}, status=400)
 
-        Report.status = "rejected"
-        Report.save()
+        report.status = "rejected"
+        report.save()
 
         return Response(status=200)
 
 class SolvedReportView(APIView):
     def post(self, request, Report_id, format=None):
         try:
-            Report = Report.objects.get(id=Report_id)
+            report = Report.objects.get(id=Report_id)
         except Report.DoesNotExist:
             return Response(status=404)
 
-        if Report.status != "approved":
+        if report.status != "approved":
             return Response({"error": "Report is not in reported status"}, status=400)
 
-        Report.status = "solved"
-        Report.save()
+        report.status = "solved"
+        report.save()
 
-        return Response(status=200)           
-    
+        return Response(status=200)
+
 class SolvedTimelineView(ListAPIView):
     queryset = Report.objects.filter(status="solved").order_by('-created_at')
     serializer_class = ReportSerializer

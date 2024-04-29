@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'knox',
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework',
@@ -114,7 +115,7 @@ REST_FRAMEWORK = {
 
     'NON_FIELD_ERRORS_KEY':'error',
     'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
-    
+
 
 }
 
