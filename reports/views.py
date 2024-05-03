@@ -139,17 +139,17 @@ class ApprovedTimelineView(ListAPIView):
 
 
 class Cat1TimelineView(ListAPIView):
-    queryset = Report.objects.filter(category="cat1").order_by('-created_at')
+    queryset = Report.objects.filter(category="cat1", status="solved").order_by('-created_at')
     serializer_class = ReportSerializer
 
 class Cat2TimelineView(ListAPIView):
-    queryset = Report.objects.filter(category="cat2").order_by('-created_at')
+    queryset = Report.objects.filter(category="cat2", status="solved" ).order_by('-created_at')
     serializer_class = ReportSerializer
 
 class Cat3TimelineView(ListAPIView):
-    queryset = Report.objects.filter(category="cat3").order_by('-created_at')
+    queryset = Report.objects.filter(category="cat3", status="solved").order_by('-created_at')
     serializer_class = ReportSerializer
 
 class OtherTimelineView(ListAPIView):
-    queryset = Report.objects.exclude(category__in=["cat1", "cat2", "cat3"]).order_by('-created_at')
+    queryset = Report.objects.filter(status="solved").exclude(category__in=["cat1", "cat2", "cat3"]).order_by('-created_at')
     serializer_class = ReportSerializer
