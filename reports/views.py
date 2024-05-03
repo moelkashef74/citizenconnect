@@ -116,7 +116,7 @@ class SolvedReportView(APIView):
             return Response(status=404)
 
         if report.status != "approved":
-            return Response({"error": "Report is not in reported status"}, status=400)
+            return Response({"error": "Report is not in approved status"}, status=400)
 
         report.status = "solved"
         report.save()
