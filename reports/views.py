@@ -8,11 +8,15 @@ from .serializers import ReportSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
-class CreateReportView(APIView):
+class CreateReport1View(APIView):
     parser_classes = (MultiPartParser, FormParser)
     permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
 
     def post(self, request, *args, **kwargs):
+        # Set a default category here
+        default_category = 'cat1'  # Replace with your desired default category
+        request.data['category'] = default_category  # Set the default category in the request data
+
         serializer = ReportSerializer(data=request.data)
         if serializer.is_valid():
             # Assign the report to the current user before saving
@@ -20,6 +24,58 @@ class CreateReportView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class CreateReport2View(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+    permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
+
+    def post(self, request, *args, **kwargs):
+        # Set a default category here
+        default_category = 'cat2'  # Replace with your desired default category
+        request.data['category'] = default_category  # Set the default category in the request data
+
+        serializer = ReportSerializer(data=request.data)
+        if serializer.is_valid():
+            # Assign the report to the current user before saving
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class CreateReport3View(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+    permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
+
+    def post(self, request, *args, **kwargs):
+        # Set a default category here
+        default_category = 'cat3'  # Replace with your desired default category
+        request.data['category'] = default_category  # Set the default category in the request data
+
+        serializer = ReportSerializer(data=request.data)
+        if serializer.is_valid():
+            # Assign the report to the current user before saving
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class CreateReportOtherView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+    permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
+
+    def post(self, request, *args, **kwargs):
+        # Set a default category here
+        default_category = 'other'  # Replace with your desired default category
+        request.data['category'] = default_category  # Set the default category in the request data
+
+        serializer = ReportSerializer(data=request.data)
+        if serializer.is_valid():
+            # Assign the report to the current user before saving
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 
 
 class ApproveReportView(APIView):
@@ -79,4 +135,21 @@ class ReportedTimelineView(ListAPIView):
 
 class ApprovedTimelineView(ListAPIView):
     queryset = Report.objects.filter(status="approved").order_by('-created_at')
+    serializer_class = ReportSerializer
+
+
+class Cat1TimelineView(ListAPIView):
+    queryset = Report.objects.filter(category="cat1").order_by('-created_at')
+    serializer_class = ReportSerializer
+
+class Cat2TimelineView(ListAPIView):
+    queryset = Report.objects.filter(category="cat2").order_by('-created_at')
+    serializer_class = ReportSerializer
+
+class Cat3TimelineView(ListAPIView):
+    queryset = Report.objects.filter(category="cat3").order_by('-created_at')
+    serializer_class = ReportSerializer
+
+class OtherTimelineView(ListAPIView):
+    queryset = Report.objects.exclude(category__in=["cat1", "cat2", "cat3"]).order_by('-created_at')
     serializer_class = ReportSerializer

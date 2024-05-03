@@ -10,6 +10,13 @@ fs = FileSystemStorage(location= settings.MEDIA_ROOT)
 
 
 class Report(models.Model):
+    CATEGORY_CHOICES = [
+        ('cat1', 'Category 1'),
+        ('cat2', 'Category 2'),
+        ('cat3', 'Category 3'),
+        ('other', 'Other'),
+    ]
+
     id = models.CharField(primary_key=True, max_length=10, editable=False)
     image = models.ImageField(upload_to="reports/", storage=fs,)
     description = models.TextField()
@@ -17,7 +24,7 @@ class Report(models.Model):
     status = models.CharField(max_length=20, default="reported")
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reports")
-    category = models.CharField(max_length=20, default="cat1")
+    category = models.CharField( max_length=20, choices=CATEGORY_CHOICES )
 
 
     def __str__(self):
