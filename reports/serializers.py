@@ -8,7 +8,7 @@ class ReportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Report
-        fields = ['id','image', 'description', 'location', 'status', 'created_at','user']
+        fields = ['id','image', 'description', 'location', 'status', 'created_at','user', 'category']
 
         
     def get_user_email(self, obj):

@@ -6,19 +6,19 @@ import random
 import string
 from accounts.models import User
 
-
 fs = FileSystemStorage(location= settings.MEDIA_ROOT)
 
 
-class Report_cat_three(models.Model):
+class Report_other(models.Model):
     id = models.CharField(primary_key=True, max_length=10, editable=False)
-    image = models.ImageField(upload_to="reports3/", storage=fs,)
+    image = models.ImageField(upload_to="other_cat/", storage=fs,)
     description = models.TextField()
     location = models.CharField(max_length=200)
     status = models.CharField(max_length=20, default="reported")
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='reports3')
-    category = models.CharField(max_length=20, default="cat3")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="other_cat")
+    category = models.CharField(max_length=20)
+
 
     def __str__(self):
         return self.description
@@ -27,7 +27,7 @@ class Report_cat_three(models.Model):
         if not self.id:
             while True:
                 random_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-                if not Report_cat_three.objects.filter(id=random_id).exists():
+                if not Report_other.objects.filter(id=random_id).exists():
                     self.id = random_id
                     break
         super().save(*args, **kwargs)

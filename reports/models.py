@@ -17,6 +17,7 @@ class Report(models.Model):
     status = models.CharField(max_length=20, default="reported")
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reports")
+    category = models.CharField(max_length=20, default="cat1")
 
 
     def __str__(self):

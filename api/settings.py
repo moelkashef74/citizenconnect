@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     'reports.apps.ReportsConfig',
     'reports2.apps.Reports2Config',
     'reports3.apps.Reports3Config',
+    'all.apps.AllConfig',
+    'other_cat.apps.OtherCatConfig'
 ]
 
 AUTH_USER_MODEL='accounts.User'
