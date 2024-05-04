@@ -153,3 +153,13 @@ class Cat3TimelineView(ListAPIView):
 class OtherTimelineView(ListAPIView):
     queryset = Report.objects.filter(status="solved").exclude(category__in=["cat1", "cat2", "cat3"]).order_by('-created_at')
     serializer_class = ReportSerializer
+    
+
+class UserReportsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        # Filter reports by the current authenticated user
+        reports = Report.objects.filter(user=request.user).order_by('-created_at')
+        serializer = ReportSerializer(reports, many=True)
+        return Response(serializer.data)

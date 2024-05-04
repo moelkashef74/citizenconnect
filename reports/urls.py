@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ApproveReportView, CreateReport1View, CreateReport2View, CreateReport3View, CreateReportOtherView, SolvedTimelineView, RejectReportView, SolvedReportView,  ReportedTimelineView, ApprovedTimelineView, Cat1TimelineView,Cat2TimelineView,Cat3TimelineView, OtherTimelineView
+from .views import ApproveReportView, CreateReport1View, CreateReport2View, CreateReport3View, CreateReportOtherView, SolvedTimelineView, RejectReportView, SolvedReportView,  ReportedTimelineView, ApprovedTimelineView, Cat1TimelineView,Cat2TimelineView,Cat3TimelineView, OtherTimelineView, UserReportsView
 
 urlpatterns = [
     path('cat1/create/', CreateReport1View.as_view(), name='create_Report1'),
@@ -16,4 +16,5 @@ urlpatterns = [
     path('cat2/timeline/', Cat2TimelineView.as_view(), name='cat2-timeline'),
     path('cat3/timeline/', Cat3TimelineView.as_view(), name='cat3-timeline'),
     path('other/timeline/', OtherTimelineView.as_view(), name='other-timeline'),
+    path('user-reports/', UserReportsView.as_view(), name='user-reports'),
 ]
