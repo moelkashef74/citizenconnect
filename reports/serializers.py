@@ -8,8 +8,18 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'email_or_phone', 'first_name', 'last_name']  # Add other fields you want to display
 
+class UserFieldSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['email_or_phone', 'full_name']
+
+    def get_full_name(self, obj):
+        return obj.get_full_name        
+
 class ReportSerializer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField(method_name='get_user_email')
+    user = UserFieldSerializer(read_only=True)
     other = serializers.CharField(write_only=True, required=False)
 
     class Meta:
