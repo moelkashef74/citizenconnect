@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Admin
+from .models import User
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
 from django.utils.encoding import smart_str, force_str, smart_bytes
@@ -9,13 +9,13 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 from django.contrib.sites.shortcuts import get_current_site
-
+from django.contrib.auth.hashers import check_password
 from django.urls import reverse
 from django.db import IntegrityError
 from .utils import send_normal_email
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework.exceptions import ValidationError
+from .models import Admin
 from knox.models import AuthToken
 
 
@@ -201,27 +201,18 @@ class LogoutSerializer(serializers.Serializer):
             return self.fail('bad_token')
         
 
-class AdminLoginSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(max_length=255)
-    password = serializers.CharField(max_length=68, write_only=True)
+class AdminLoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
 
-    class Meta:
-        model = Admin
-        fields = ['username', 'password']
+    def validate(self, data):
+        username = data.get('username')
+        password = data.get('password')
 
-    def validate(self, attrs):
-        username = attrs.get('username')
-        password = attrs.get('password')
-        request = self.context.get('request')
+        if not username or not password:
+            raise serializers.ValidationError("Username and password are required.")
 
-        user = authenticate(request, username=username, password=password)
-        if user:
-            # This will create a Knox token and return the token key
-            token = AuthToken.objects.create(user)[1]
-            return {
-                'user': user,
-                'username': username,
-                'token': token
-            }
-        else:
-            raise AuthenticationFailed("Invalid credentials, please try again")
+        admin = Admin.objects.filter(username=username).first()
+        if admin and admin.check_password(password):
+            return admin
+        raise serializers.ValidationError("Incorrect username or password.")

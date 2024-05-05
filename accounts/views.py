@@ -131,22 +131,12 @@ class LogoutUserView(APIView):
         return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
 
  
-
-class AdminLoginView(APIView):
-
-    def post(self, request, *args, **kwargs):
-        serializer = AdminLoginSerializer(data=request.data, context={'request': request})
+class AdminLoginAPIView(APIView):
+    def post(self, request):
+        serializer = AdminLoginSerializer(data=request.data)
         if serializer.is_valid():
-            # Perform login actions
-            validated_data = serializer.validated_data
-            user = validated_data['user']
-            token = validated_data['token']
-            
-            # You can perform additional actions here if needed
-            
-            return Response({
-                'username': user.username,
-                'token': token,
-                # Include additional fields as needed
-            }, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            admin = serializer.validated_data
+            print("Admin authenticated:", admin.username)
+            return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
+        print("Authentication failed:", serializer.errors)
+        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)

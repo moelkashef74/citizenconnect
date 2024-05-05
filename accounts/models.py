@@ -3,9 +3,9 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from .managers import UserManager
 from django.core.validators import RegexValidator
-from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import Permission
-from django.contrib.auth.models import Group
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import check_password
+
 
 
 
@@ -38,29 +38,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
-    
 
 
 class Admin(models.Model):
-    username = models.CharField(max_length=150, unique=True, verbose_name=_("Username"))
-    user_permissions = models.ManyToManyField(
-        Permission,
-        blank=True,
-        related_name="admin_user_permissions",
-    )
-    groups = models.ManyToManyField(
-        Group,
-        blank=True,
-        related_name="admin_groups",
-    )
+    username = models.CharField(max_length=150, unique=True)
+    password = models.CharField(max_length=128)
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = []
+    def set_password(self, raw_password):
+        self.password = make_password(raw_password)
 
-    class Meta:
-        permissions = (
-            ("can_view_admin", "Can view admin"),  # renamed permission
-        )
-
-    def __str__(self):
-        return self.username
+    def check_password(self, raw_password):
+        return check_password(raw_password, self.password)
