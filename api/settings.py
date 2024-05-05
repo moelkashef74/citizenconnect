@@ -109,6 +109,12 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL='accounts.User'
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+
 REST_FRAMEWORK = {
 
     'NON_FIELD_ERRORS_KEY':'error',
