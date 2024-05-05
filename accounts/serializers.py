@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, Admin
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
 from django.utils.encoding import smart_str, force_str, smart_bytes
@@ -199,3 +199,29 @@ class LogoutSerializer(serializers.Serializer):
             RefreshToken(self.token).blacklist()
         except TokenError:
             return self.fail('bad_token')
+        
+
+class AdminLoginSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=255)
+    password = serializers.CharField(max_length=68, write_only=True)
+
+    class Meta:
+        model = Admin
+        fields = ['username', 'password']
+
+    def validate(self, attrs):
+        username = attrs.get('username')
+        password = attrs.get('password')
+        request = self.context.get('request')
+
+        user = authenticate(request, username=username, password=password)
+        if user:
+            # This will create a Knox token and return the token key
+            token = AuthToken.objects.create(user)[1]
+            return {
+                'user': user,
+                'username': username,
+                'token': token
+            }
+        else:
+            raise AuthenticationFailed("Invalid credentials, please try again")

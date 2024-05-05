@@ -4,9 +4,12 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 from .models import Report
-from .serializers import ReportSerializer
+from .serializers import ReportSerializer, UserSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from rest_framework.generics import RetrieveAPIView
+from accounts.models import User
+
 
 class CreateReport1View(APIView):
     parser_classes = (MultiPartParser, FormParser)
@@ -153,7 +156,7 @@ class Cat3TimelineView(ListAPIView):
 class OtherTimelineView(ListAPIView):
     queryset = Report.objects.filter(status="solved").exclude(category__in=["cat1", "cat2", "cat3"]).order_by('-created_at')
     serializer_class = ReportSerializer
-    
+
 
 class UserReportsView(APIView):
     permission_classes = [IsAuthenticated]
@@ -163,3 +166,13 @@ class UserReportsView(APIView):
         reports = Report.objects.filter(user=request.user).order_by('-created_at')
         serializer = ReportSerializer(reports, many=True)
         return Response(serializer.data)
+    
+
+class UserDetailView(APIView):
+    def get(self, request, email, format=None):
+        try:
+            user = User.objects.get(email_or_phone=email)
+            serializer = UserSerializer(user)
+            return Response(serializer.data)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)

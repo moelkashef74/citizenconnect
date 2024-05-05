@@ -2,8 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from .managers import UserManager
-from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.validators import RegexValidator
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Group
 
 
 
@@ -38,3 +40,27 @@ class User(AbstractBaseUser, PermissionsMixin):
         return f"{self.first_name} {self.last_name}"
     
 
+
+class Admin(models.Model):
+    username = models.CharField(max_length=150, unique=True, verbose_name=_("Username"))
+    user_permissions = models.ManyToManyField(
+        Permission,
+        blank=True,
+        related_name="admin_user_permissions",
+    )
+    groups = models.ManyToManyField(
+        Group,
+        blank=True,
+        related_name="admin_groups",
+    )
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = []
+
+    class Meta:
+        permissions = (
+            ("can_view_admin", "Can view admin"),  # renamed permission
+        )
+
+    def __str__(self):
+        return self.username

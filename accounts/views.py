@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.generics import GenericAPIView
-from .serializers import UserRegisterSerializer, LoginSerializer,SetNewPasswordSerializer,PasswordResetRequestSerializer, LogoutSerializer
+from .serializers import UserRegisterSerializer, LoginSerializer,SetNewPasswordSerializer,PasswordResetRequestSerializer, AdminLoginSerializer
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,7 +11,9 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import smart_str, DjangoUnicodeDecodeError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from knox.models import AuthToken
+from knox.auth import  TokenAuthentication
+from django.contrib.auth import authenticate, login
+
 
 
 # from .utils import send_code_to_user
@@ -121,14 +123,30 @@ class SetNewPasswordView(GenericAPIView):
         return Response({'success':True, 'message':"password reset is succesful"}, status=status.HTTP_200_OK)
 
 class LogoutUserView(APIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = LogoutSerializer
+    authentication_classes = [TokenAuthentication]
 
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def post(self, request, *args, **kwargs):
+        # This assumes you have passed the token in the Authorization header
+        request._auth.delete()
+        return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
 
  
 
+class AdminLoginView(APIView):
+
+    def post(self, request, *args, **kwargs):
+        serializer = AdminLoginSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            # Perform login actions
+            validated_data = serializer.validated_data
+            user = validated_data['user']
+            token = validated_data['token']
+            
+            # You can perform additional actions here if needed
+            
+            return Response({
+                'username': user.username,
+                'token': token,
+                # Include additional fields as needed
+            }, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
