@@ -23,7 +23,7 @@ class ReportSerializer(serializers.ModelSerializer):
         }
 
     def get_user_email(self, obj):
-        return obj.user.get_full_name
+        return obj.user.email_or_phone
 
     def validate(self, data):
         category = data.get('category')
