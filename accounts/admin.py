@@ -7,6 +7,8 @@ from django.contrib.auth.hashers import make_password
 from .models import User, Admin
 # Register your models here.
 
+admin.site.register(User)
+
 
 class BasicUserAdmin(admin.ModelAdmin):
     model = Admin

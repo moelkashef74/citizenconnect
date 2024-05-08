@@ -20,7 +20,7 @@ class Report(models.Model):
     id = models.CharField(primary_key=True, max_length=10, editable=False)
     image = models.ImageField(upload_to="reports/", storage=fs,)
     description = models.TextField()
-    location = models.CharField(max_length=200)
+    location = models.TextField()
     status = models.CharField(max_length=20, default="reported")
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reports")
