@@ -11,9 +11,9 @@ fs = FileSystemStorage(location= settings.MEDIA_ROOT)
 
 class Report(models.Model):
     CATEGORY_CHOICES = [
-        ('cat1', 'Category 1'),
-        ('cat2', 'Category 2'),
-        ('cat3', 'Category 3'),
+        ('Environmental', 'env'),
+        ('Traffic', 'tr'),
+        ('Electric', 'elec'),
         ('other', 'Other'),
     ]
 

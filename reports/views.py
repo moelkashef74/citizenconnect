@@ -17,7 +17,7 @@ class CreateReport1View(APIView):
 
     def post(self, request, *args, **kwargs):
         # Set a default category here
-        default_category = 'cat1'  # Replace with your desired default category
+        default_category = 'Environmental'  # Replace with your desired default category
         request.data['category'] = default_category  # Set the default category in the request data
 
         serializer = ReportSerializer(data=request.data)
@@ -34,7 +34,7 @@ class CreateReport2View(APIView):
 
     def post(self, request, *args, **kwargs):
         # Set a default category here
-        default_category = 'cat2'  # Replace with your desired default category
+        default_category = 'Traffic'  # Replace with your desired default category
         request.data['category'] = default_category  # Set the default category in the request data
 
         serializer = ReportSerializer(data=request.data)
@@ -51,7 +51,7 @@ class CreateReport3View(APIView):
 
     def post(self, request, *args, **kwargs):
         # Set a default category here
-        default_category = 'cat3'  # Replace with your desired default category
+        default_category = 'Electric'  # Replace with your desired default category
         request.data['category'] = default_category  # Set the default category in the request data
 
         serializer = ReportSerializer(data=request.data)
@@ -142,15 +142,15 @@ class ApprovedTimelineView(ListAPIView):
 
 
 class Cat1TimelineView(ListAPIView):
-    queryset = Report.objects.filter(category="cat1", status="solved").order_by('-created_at')
+    queryset = Report.objects.filter(category="Environmental", status="solved").order_by('-created_at')
     serializer_class = ReportSerializer
 
 class Cat2TimelineView(ListAPIView):
-    queryset = Report.objects.filter(category="cat2", status="solved" ).order_by('-created_at')
+    queryset = Report.objects.filter(category="Traffic", status="solved" ).order_by('-created_at')
     serializer_class = ReportSerializer
 
 class Cat3TimelineView(ListAPIView):
-    queryset = Report.objects.filter(category="cat3", status="solved").order_by('-created_at')
+    queryset = Report.objects.filter(category="Electric", status="solved").order_by('-created_at')
     serializer_class = ReportSerializer
 
 class OtherTimelineView(ListAPIView):
