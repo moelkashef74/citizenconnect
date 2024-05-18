@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.generics import GenericAPIView
-from .serializers import UserRegisterSerializer, LoginSerializer,SetNewPasswordSerializer,PasswordResetRequestSerializer, AdminLoginSerializer
-
+from .serializers import UserRegisterSerializer, LoginSerializer,SetNewPasswordSerializer,PasswordResetRequestSerializer, AdminLoginSerializer, VerifyOTPSerializer
+from django.core.cache import cache
 from rest_framework.response import Response
 from rest_framework import status
 from django.utils.encoding import smart_str
@@ -13,6 +13,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from knox.auth import  TokenAuthentication
 from django.contrib.auth import authenticate, login
+import vonage
+from random import randint
 
 
 
@@ -32,31 +34,57 @@ class RegisterUserView(GenericAPIView):
             serializer.save()
             user=serializer.data
 
-          #  send_code_to_user(user['email'])
+            # generate OTP
+            otp = randint(100000, 999999)
 
-            print(user)
+            # store OTP in cache
+            cache.set(user['phone'], otp, 300)  # OTP expires after 300 seconds (5 minutes)
+
+            # send OTP via SMS
+            client = vonage.Client(key="61ed90e4", secret="zOKWwmXD2VkcrveK")
+            sms = vonage.Sms(client)
+
+            responseData = sms.send_message(
+                {
+                    "from": "Vonage APIs",
+                    "to": user['phone'],
+                    "text":f"ahoy  {user['get_full_name']} Your OTP is: {otp}",
+                }
+            )
+
+            if responseData["messages"][0]["status"] == "0":
+                print("Message sent successfully.")
+            else:
+                print(f"Message failed with error: {responseData['messages'][0]['error-text']}")
+
             return Response({
                 'data':user,
-                'message':f'hi thanks for signing up'
+                'message':f'Hi, thanks for signing up. We have sent an OTP to your phone number for verification.'
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-# class VerifyUserEmail(GenericAPIView):
-#     def post(self, request):
-#         try:
-#             passcode = request.data.get('code')
-#             user_pass_obj=OneTimePassword.objects.get(code=passcode)
-#             user=user_pass_obj.user
-#             if not user.is_verified:
-#                 user.is_verified=True
-#                 user.save()
-#                 return Response({
-#                     'message':'account email verified successfully'
-#                 }, status=status.HTTP_200_OK)
-#             return Response({'message':'passcode is invalid user is already verified'}, status=status.HTTP_204_NO_CONTENT)
-#         except OneTimePassword.DoesNotExist as identifier:
-#             return Response({'message':'passcode not provided'}, status=status.HTTP_400_BAD_REQUEST)
+class VerifyOTPView(GenericAPIView):
+    serializer_class = VerifyOTPSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            phone = serializer.validated_data['phone']
+            otp = serializer.validated_data['otp']
+
+            # get OTP from cache
+            stored_otp = cache.get(phone)
+
+            if stored_otp is not None and stored_otp == otp:
+                user = User.objects.get(phone=phone)
+                user.is_verified = True
+                user.save()
+                return Response({'message': 'Phone number verified successfully.'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'message': 'Invalid OTP.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 
 class LoginUserView(APIView):
@@ -67,6 +95,11 @@ class LoginUserView(APIView):
             # Perform login actions
             validated_data = serializer.validated_data
             user = validated_data['user']
+
+            # Check if the user is verified
+            if not user.is_verified:
+                return Response({'message': 'Your phone number is not verified.'}, status=status.HTTP_400_BAD_REQUEST)
+
             token = validated_data['token']
             full_name = validated_data['full_name']
             
@@ -74,7 +107,7 @@ class LoginUserView(APIView):
             
             return Response({
                 'full_name': full_name,
-                'email': user.email_or_phone,
+                'phone': user.phone,
                 'token': token,
                 # Include additional fields as needed
             }, status=status.HTTP_200_OK)
@@ -102,18 +135,18 @@ class PasswordResetRequestView(GenericAPIView):
 
 class PasswordResetConfirm(GenericAPIView):
 
-    def get(self, request, uidb64, token):
+    def get(self, request, email, token):
         try:
-            user_id=smart_str(urlsafe_base64_decode(uidb64))
-            user=User.objects.get(id=user_id)
+            email = smart_str(urlsafe_base64_decode(email))
+            user = User.objects.get(email=email)
 
             if not PasswordResetTokenGenerator().check_token(user, token):
-                return Response({'message':'token is invalid or has expired'}, status=status.HTTP_401_UNAUTHORIZED)
-            return Response({'success':True, 'message':'credentials is valid', 'uidb64':uidb64, 'token':token}, status=status.HTTP_200_OK)
+                return Response({'message': 'token is invalid or has expired'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'success': True, 'message': 'credentials is valid', 'email': email, 'token': token},
+                            status=status.HTTP_200_OK)
 
         except DjangoUnicodeDecodeError as identifier:
-            return Response({'message':'token is invalid or has expired'}, status=status.HTTP_401_UNAUTHORIZED)
-
+            return Response({'message': 'token is invalid or has expired'}, status=status.HTTP_401_UNAUTHORIZED)
 class SetNewPasswordView(GenericAPIView):
     serializer_class=SetNewPasswordSerializer
 

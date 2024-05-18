@@ -26,11 +26,10 @@ from knox.models import AuthToken
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=68, min_length=6, write_only=True)
     password2 = serializers.CharField(max_length=68, write_only=True)
-    email_or_phone = serializers.CharField(max_length=255)
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email_or_phone', 'id', 'password', 'password2']
+        fields = ['first_name', 'last_name', 'phone', 'email', 'password', 'password2','get_full_name']
 
     def validate(self, attrs):
         password = attrs.get('password', '')
@@ -40,42 +39,33 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        try:
-            first_name = validated_data.get('first_name')
-            last_name = validated_data.get('last_name')
-            email_or_phone = validated_data.get('email_or_phone')
-            id = validated_data.get('id')
-            password = validated_data.get('password')
+        first_name = validated_data.get('first_name')
+        last_name = validated_data.get('last_name')
+        phone = validated_data.get('phone')
+        email = validated_data.get('email')
+        password = validated_data.get('password')
 
-            # Determine if email or phone number
-            if '@' in email_or_phone:
-                email = email_or_phone
-                user = User.objects.create_user(
-                    first_name=first_name,
-                    last_name=last_name,
-                    email_or_phone=email,
-                    id=id,
-                    password=password
-                )
-            else:
-                phone_number = email_or_phone
-                user = User.objects.create_user(
-                    first_name=first_name,
-                    last_name=last_name,
-                    email_or_phone=phone_number,
-                    id=id,
-                    password=password
-                )
 
-            return user
-        except IntegrityError:
-            # Handle the case where the email or phone number already exists
-            raise serializers.ValidationError("Email or phone number already exists")
+        user = User.objects.create_user(
+            first_name=first_name,
+            last_name=last_name,
+            phone=phone,
+            email=email,
+            password=password,
+            is_verified = False
+        )
+
+        return user
+
+class VerifyOTPSerializer(serializers.Serializer):
+    phone = serializers.CharField()
+    otp = serializers.IntegerField()
+
 
 
 
 class LoginSerializer(serializers.ModelSerializer):
-    email_or_phone = serializers.CharField(max_length=255)
+    phone = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=68, write_only=True)
     full_name = serializers.CharField(max_length=255, read_only=True)
     access_token = serializers.CharField(max_length=255, read_only=True)
@@ -83,26 +73,21 @@ class LoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email_or_phone', 'password', 'full_name', 'access_token', 'refresh_token']
+        fields = ['phone', 'password', 'full_name', 'access_token', 'refresh_token']
 
     def validate(self, attrs):
-        email_or_phone = attrs.get('email_or_phone')
+        phone = attrs.get('phone')
         password = attrs.get('password')
         request = self.context.get('request')
 
-        # Determine if email or phone number
-        if '@' in email_or_phone:
-            email = email_or_phone
-            user = authenticate(request, email_or_phone=email, password=password)
-        else:
-            phone_number = email_or_phone
-            user = authenticate(request, email_or_phone=phone_number, password=password)
+
+        user = authenticate(request, phone=phone, password=password)
         if user:
             # This will create a Knox token and return the token key
             token = AuthToken.objects.create(user)[1]
             return {
                 'user': user,
-                'email_or_phone': email_or_phone,
+                'phone': phone,
                 'full_name': user.get_full_name,
                 'token': token
             }
@@ -112,39 +97,29 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 class PasswordResetRequestSerializer(serializers.Serializer):
-    email_or_phone = serializers.CharField(max_length=255)
+    email = serializers.EmailField(max_length=255)
 
     class Meta:
-        fields = ['email_or_phone']
+        fields = ['email']
 
     def validate(self, attrs):
-        email_or_phone = attrs.get('email_or_phone')
+        email = attrs.get('email')
         request = self.context.get('request')
 
-        # Determine if email or phone number
-        if '@' in email_or_phone:
-            email = email_or_phone
-            if User.objects.filter(email_or_phone=email).exists():
-                user = User.objects.get(email_or_phone=email)
-            else:
-                raise serializers.ValidationError("User with this email does not exist")
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email=email)
         else:
-            phone_number = email_or_phone
-            if User.objects.filter(email_or_phone=phone_number).exists():
-                user = User.objects.get(email_or_phone=phone_number)
-            else:
-                raise serializers.ValidationError("User with this phone number does not exist")
+            raise serializers.ValidationError("User with this email does not exist")
 
-        uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
         token = PasswordResetTokenGenerator().make_token(user)
         current_site = get_current_site(request).domain
-        relative_link = reverse('reset-password-confirm', kwargs={'uidb64': uidb64, 'token': token})
+        relative_link = reverse('reset-password-confirm', kwargs={'email': urlsafe_base64_encode(smart_bytes(user.email)), 'token': token})
         abslink = f"http://{current_site}{relative_link}"
         email_body = f"Hi {user.first_name}, use the link below to reset your password: {abslink}"
         data = {
             'email_body': email_body,
             'email_subject': "Reset your Password",
-            'to_email': user.email_or_phone
+            'to_email': user.email
         }
         send_normal_email(data)
 
@@ -155,21 +130,22 @@ class PasswordResetRequestSerializer(serializers.Serializer):
 class SetNewPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=100, min_length=6, write_only=True)
     confirm_password = serializers.CharField(max_length=100, min_length=6, write_only=True)
-    uidb64 = serializers.CharField(min_length=1, write_only=True)
+    email = serializers.CharField(min_length=1, write_only=True)
     token = serializers.CharField(min_length=3, write_only=True)
 
     class Meta:
-        fields = ['password', 'confirm_password', 'uidb64', 'token']
+        fields = ['password', 'confirm_password', 'email', 'token']
 
     def validate(self, attrs):
         try:
             token = attrs.get('token')
-            uidb64 = attrs.get('uidb64')
+            email = attrs.get('email')
             password = attrs.get('password')
             confirm_password = attrs.get('confirm_password')
 
-            user_id = force_str(urlsafe_base64_decode(uidb64))
-            user = User.objects.get(id=user_id)
+
+            user = User.objects.get(email=email)
+
             if password != confirm_password:
                 raise serializers.ValidationError("Passwords do not match")
             if not PasswordResetTokenGenerator().check_token(user, token):
