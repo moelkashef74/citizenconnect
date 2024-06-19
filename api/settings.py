@@ -203,7 +203,7 @@ SENDGRID_API_KEY = env('SENDGRID_API_KEY')
 
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = '/home/citizenconnectt/citizenconnect/media'
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 
