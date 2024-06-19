@@ -11,6 +11,7 @@ from rest_framework.generics import RetrieveAPIView
 from accounts.models import User
 
 
+
 class CreateReport1View(APIView):
     parser_classes = (MultiPartParser, FormParser)
     permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
@@ -92,6 +93,9 @@ class ApproveReportView(APIView):
             return Response({"error": "Report is not in reported status"}, status=400)
 
         report.status = "approved"
+        if report.notification is None:
+            report.notification = []
+        report.notification.append(f"Report {report.id} has been approved.")
         report.save()
 
         return Response(status=200)
@@ -107,6 +111,9 @@ class RejectReportView(APIView):
             return Response({"error": "Report is not in reported status"}, status=400)
 
         report.status = "rejected"
+        if report.notification is None:
+            report.notification = []
+        report.notification.append(f"Report {report.id} has been rejected.")
         report.save()
 
         return Response(status=200)
@@ -122,6 +129,9 @@ class SolvedReportView(APIView):
             return Response({"error": "Report is not in approved status"}, status=400)
 
         report.status = "solved"
+        if report.notification is None:
+            report.notification = []
+        report.notification.append(f"Report {report.id} has been solved.")
         report.save()
 
         return Response(status=200)
@@ -176,3 +186,16 @@ class UserDetailView(APIView):
             return Response(serializer.data)
         except User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class NotificationView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        # Filter reports by the current authenticated user and exclude reports without a notification
+        reports = Report.objects.filter(user=request.user).exclude(notification__isnull=True).order_by('-created_at')
+
+        # Concatenate all notifications into a single list
+        notifications = [note for report in reports for note in report.notification]
+
+        return Response(notifications)

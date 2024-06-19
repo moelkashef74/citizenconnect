@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ApproveReportView, CreateReport1View, CreateReport2View, CreateReport3View, CreateReportOtherView, SolvedTimelineView, RejectReportView, SolvedReportView,  ReportedTimelineView, ApprovedTimelineView, Cat1TimelineView,Cat2TimelineView,Cat3TimelineView, OtherTimelineView, UserReportsView, UserDetailView
+from .views import ApproveReportView, CreateReport1View, CreateReport2View, CreateReport3View, CreateReportOtherView, SolvedTimelineView, RejectReportView, SolvedReportView,  ReportedTimelineView, ApprovedTimelineView, Cat1TimelineView,Cat2TimelineView,Cat3TimelineView, OtherTimelineView, UserReportsView, UserDetailView, NotificationView
 
 urlpatterns = [
     path('env/create/', CreateReport1View.as_view(), name='create_env_Report'),
@@ -18,4 +18,5 @@ urlpatterns = [
     path('other/timeline/', OtherTimelineView.as_view(), name='other-timeline'),
     path('user-reports/', UserReportsView.as_view(), name='user-reports'),
     path('user-detail/<str:email>/', UserDetailView.as_view(), name='user-detail-by-email'),
+    path('notifications/', NotificationView.as_view(), name='notifications'),
 ]

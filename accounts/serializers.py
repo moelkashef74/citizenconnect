@@ -80,11 +80,14 @@ class LoginSerializer(serializers.ModelSerializer):
         password = attrs.get('password')
         request = self.context.get('request')
 
-
+        if phone.startswith('01'):
+            # Prepend '+2' to the phone number
+            phone = '+2' + phone
         user = authenticate(request, phone=phone, password=password)
         if user:
             # This will create a Knox token and return the token key
             token = AuthToken.objects.create(user)[1]
+
             return {
                 'user': user,
                 'phone': phone,

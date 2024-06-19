@@ -23,7 +23,13 @@ class UserManager(BaseUserManager):
 
         return phone
 
-    def create_user(self, first_name, last_name, phone, password, **extra_fields):
+    def email_validator(self, email):
+        try:
+            validate_email(email)
+        except ValidationError:
+            raise ValueError(_("Invalid email"))
+
+    def create_user(self, first_name, last_name, phone, email, password, **extra_fields):
         if not phone:
             raise ValueError(_("A phone number is required"))
         self.phone_number_validator(phone)
@@ -32,14 +38,17 @@ class UserManager(BaseUserManager):
             raise ValueError(_("The first name is required"))
         if not last_name:
             raise ValueError(_("The last name is required"))
+        if not email:
+            raise ValueError(_("An email is required"))
+        self.email_validator(email)
 
         phone = self.phone_number_validator(phone)
-        user = self.model(first_name=first_name, last_name=last_name, phone=phone, **extra_fields)
+        user = self.model(first_name=first_name, last_name=last_name, phone=phone, email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, first_name, last_name, phone, password, **extra_fields):
+    def create_superuser(self, first_name, last_name, phone, email, password, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_verified", True)
@@ -50,6 +59,6 @@ class UserManager(BaseUserManager):
             raise ValueError(_("is_superuser must be True for admin user"))
 
         phone = self.phone_number_validator(phone)
-        user = self.create_user(first_name, last_name, phone, password, **extra_fields)
+        user = self.create_user(first_name, last_name, phone, email, password, **extra_fields)
         user.save(using=self._db)
         return user
