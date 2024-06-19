@@ -35,7 +35,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = ['citizenconnectt.pythonanywhere.com','127.0.0.1','localhost', '.vercel.app']
+ALLOWED_HOSTS = ['*','citizenconnectt.pythonanywhere.com','127.0.0.1','localhost', '.vercel.app']
 
 
 # Application definition
@@ -205,6 +205,8 @@ SENDGRID_API_KEY = env('SENDGRID_API_KEY')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/home/citizenconnectt/citizenconnect/media'
+
+django_heroku.settings(locals())
 
 
 
