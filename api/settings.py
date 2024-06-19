@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 import environ
+import dj_database_url
 from datetime import timedelta
 
 
@@ -52,7 +53,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework',
     'accounts.apps.AccountsConfig',
-    'anymail',
     'reports.apps.ReportsConfig',
 ]
 
@@ -95,9 +95,8 @@ WSGI_APPLICATION = 'api.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    'default': dj_database_url.config(default=env('DATABASE_URL'))
+        #
         # 'ENGINE': 'django.db.backends.postgresql',
         # 'URL': env('POSTGRES_URL'),
         # 'NAME': env('PGNAME'),
@@ -105,7 +104,7 @@ DATABASES = {
         # 'PASSWORD': env('POSTGRES_PASSWORD'),
         # 'HOST': env('PGHOST'),
         # 'PORT': env('PGPORT'),
-    }
+
 }
 
 AUTH_USER_MODEL='accounts.User'
@@ -206,7 +205,6 @@ SENDGRID_API_KEY = env('SENDGRID_API_KEY')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/home/citizenconnectt/citizenconnect/media'
 
-django_heroku.settings(locals())
 
 
 
