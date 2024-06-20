@@ -95,7 +95,10 @@ class ApproveReportView(APIView):
         report.status = "approved"
         if report.notification is None:
             report.notification = []
-        report.notification.append(f"Report {report.id} has been approved.")
+        report.notification.append({
+    'message': f"Report {report.id} has been approved.",
+    'timestamp': datetime.now()
+})
         report.save()
 
         return Response(status=200)
@@ -113,7 +116,10 @@ class RejectReportView(APIView):
         report.status = "rejected"
         if report.notification is None:
             report.notification = []
-        report.notification.append(f"Report {report.id} has been rejected.")
+        report.notification.append({
+    'message': f"Report {report.id} has been rejected.",
+    'timestamp': datetime.now()
+})
         report.save()
 
         return Response(status=200)
@@ -131,7 +137,10 @@ class SolvedReportView(APIView):
         report.status = "solved"
         if report.notification is None:
             report.notification = []
-        report.notification.append(f"Report {report.id} has been solved.")
+        report.notification.append({
+    'message': f"Report {report.id} has been solved.",
+    'timestamp': datetime.now()
+})
         report.save()
 
         return Response(status=200)
@@ -197,5 +206,8 @@ class NotificationView(APIView):
 
         # Concatenate all notifications into a single list
         notifications = [note for report in reports for note in report.notification]
+
+        # Sort notifications by timestamp
+        notifications.sort(key=lambda x: x['timestamp'], reverse=True)
 
         return Response(notifications)
