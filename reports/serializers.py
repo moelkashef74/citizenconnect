@@ -70,7 +70,11 @@ class ReportSerializer(serializers.ModelSerializer):
             try:
                 address = geocode_location(latitude, longitude)
                 if address:
-                    validated_data['location'] = address
+                    if "مصر" in address or "Egypt" in address:
+                        validated_data['location'] = address
+                    else:
+                        raise serializers.ValidationError({'location': 'out of range'})
+
                 else:
                     raise serializers.ValidationError({'location': 'Geocoding failed to return an address.'})
             except Exception as e:  # Replace with specific exceptions you expect from geocode_location
