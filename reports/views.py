@@ -97,7 +97,7 @@ class ApproveReportView(APIView):
             report.notification = []
         report.notification.append({
     'message': f"Report {report.id} has been approved.",
-    'timestamp': datetime.now()
+    'timestamp': datetime.now().isoformat()
 })
         report.save()
 
@@ -118,7 +118,7 @@ class RejectReportView(APIView):
             report.notification = []
         report.notification.append({
     'message': f"Report {report.id} has been rejected.",
-    'timestamp': datetime.now()
+    'timestamp': datetime.now().isoformat()
 })
         report.save()
 
@@ -139,7 +139,7 @@ class SolvedReportView(APIView):
             report.notification = []
         report.notification.append({
     'message': f"Report {report.id} has been solved.",
-    'timestamp': datetime.now()
+    'timestamp': datetime.now().isoformat()
 })
         report.save()
 
