@@ -6,6 +6,7 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 
 
 fs = FileSystemStorage(location= settings.MEDIA_ROOT)
