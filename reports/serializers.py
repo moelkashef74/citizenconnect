@@ -21,14 +21,14 @@ class UserFieldSerializer(serializers.ModelSerializer):
 
 class ReportSerializer(serializers.ModelSerializer):
     user = UserFieldSerializer(read_only=True)
-    other = serializers.CharField(write_only=True, required=False)
+    # other = serializers.CharField(write_only=True, required=False)
     latitude = serializers.FloatField(write_only=True, required=False)
     longitude = serializers.FloatField(write_only=True, required=False)
     location = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
     class Meta:
         model = Report
-        fields = ['id', 'image', 'description', 'location', 'status', 'created_at', 'user', 'category', 'other', 'latitude', 'longitude']
+        fields = ['id', 'image', 'description', 'location', 'status', 'created_at', 'user', 'category', 'latitude', 'longitude']
         extra_kwargs = {
             'category': {
                 'required': True,
@@ -83,7 +83,7 @@ class ReportSerializer(serializers.ModelSerializer):
             # If location is not provided and geocoding is not possible, raise an error
             raise serializers.ValidationError({'location': 'This field is required.'}) 
 
-        if validated_data.get('category') == 'other':
-            validated_data['category'] = validated_data.pop('other')
+        # if validated_data.get('category') == 'other':
+        #     validated_data['category'] = validated_data.pop('other')
 
         return super().create(validated_data)
