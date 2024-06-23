@@ -195,3 +195,8 @@ class AdminLoginSerializer(serializers.Serializer):
         if admin and admin.check_password(password):
             return admin
         raise serializers.ValidationError("Incorrect username or password.")
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'phone', 'email', 'photo']

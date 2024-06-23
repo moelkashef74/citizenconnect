@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.generics import GenericAPIView
-from .serializers import UserRegisterSerializer, LoginSerializer,SetNewPasswordSerializer,PasswordResetRequestSerializer, AdminLoginSerializer, VerifyOTPSerializer
+from .serializers import UserRegisterSerializer, LoginSerializer,SetNewPasswordSerializer,PasswordResetRequestSerializer, AdminLoginSerializer, VerifyOTPSerializer, UserUpdateSerializer
 from django.core.cache import cache
 from rest_framework.response import Response
 from rest_framework import status
@@ -173,3 +173,12 @@ class AdminLoginAPIView(APIView):
             return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
         print("Authentication failed:", serializer.errors)
         return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserUpdateView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserUpdateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user

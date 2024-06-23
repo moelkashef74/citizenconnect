@@ -11,6 +11,7 @@ from django.contrib.auth.hashers import check_password
 
 class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, verbose_name=_("First Name"))
+    photo = models.ImageField(upload_to='user_photos/', blank=True, null=True)
     last_name = models.CharField(max_length=100, verbose_name=_("Last Name"))
     email = models.EmailField(max_length=255, unique=True, verbose_name=_("Email Address"))
     phone = models.CharField(max_length=14, unique=True, primary_key=True, verbose_name=_('Phone Number'))
