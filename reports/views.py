@@ -188,9 +188,9 @@ class UserReportsView(APIView):
     
 
 class UserDetailView(APIView):
-    def get(self, request, email, format=None):
+    def get(self, request, phone, format=None):
         try:
-            user = User.objects.get(email_or_phone=email)
+            user = User.objects.get(phone=phone)
             serializer = UserSerializer(user)
             return Response(serializer.data)
         except User.DoesNotExist:

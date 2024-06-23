@@ -17,6 +17,6 @@ urlpatterns = [
     path('electric/timeline/', Cat3TimelineView.as_view(), name='electric-timeline'),
     path('other/timeline/', OtherTimelineView.as_view(), name='other-timeline'),
     path('user-reports/', UserReportsView.as_view(), name='user-reports'),
-    path('user-detail/<str:email>/', UserDetailView.as_view(), name='user-detail-by-email'),
+    path('user-detail/<str:phone>/', UserDetailView.as_view(), name='user-detail-by-phone'),
     path('notifications/', NotificationView.as_view(), name='notifications'),
 ]
