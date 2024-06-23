@@ -180,4 +180,4 @@ class UserUpdateView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserUpdateSerializer
     permission_classes = [IsAuthenticated]
-    lookup_field = 'phone'
+    lookup_field = 'id'

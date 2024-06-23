@@ -11,5 +11,5 @@ urlpatterns = [
     path('set-new-password/', SetNewPasswordView.as_view(), name='set-new-password'),
     path('logout/', LogoutUserView.as_view(), name='logout'),
     path('admin-login/', AdminLoginAPIView.as_view(), name='login'),
-    path('user-update/<int:phone>/', UserUpdateView.as_view(), name='update-user'),
+    path('user-update/<int:id>/', UserUpdateView.as_view(), name='update-user'),
 ]
