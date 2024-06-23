@@ -40,13 +40,7 @@ class ReportSerializer(serializers.ModelSerializer):
         return obj.user.phone
 
     def validate(self, data):
-        category = data.get('category')
-        other = data.get('other')
 
-        if category == 'other' and not other:
-            raise serializers.ValidationError({
-                'other': 'This field is required when "Other" is selected as category.'
-            })
 
         latitude = data.get('latitude')
         longitude = data.get('longitude')
