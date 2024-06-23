@@ -5,13 +5,14 @@ from .managers import UserManager
 from django.core.validators import RegexValidator
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
+from django.core.files.storage import FileSystemStorage
 
 
-
+fs = FileSystemStorage(location= settings.MEDIA_ROOT)
 
 class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, verbose_name=_("First Name"))
-    photo = models.ImageField(upload_to='user_photos/', blank=True, null=True)
+    photo = models.ImageField(upload_to='user_photos/', blank=True, null=True,storage=fs, verbose_name=_("Profile Picture"))
     last_name = models.CharField(max_length=100, verbose_name=_("Last Name"))
     email = models.EmailField(max_length=255, unique=True, verbose_name=_("Email Address"))
     phone = models.CharField(max_length=14, unique=True, primary_key=True, verbose_name=_('Phone Number'))
