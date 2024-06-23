@@ -7,7 +7,19 @@ from django.contrib.auth.hashers import make_password
 from .models import User, Admin
 # Register your models here.
 
-admin.site.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('email', 'phone', 'first_name', 'last_name')  # Add other fields you want to display
+
+    def save_model(self, request, obj, form, change):
+        if change:  # if this is an update
+            original_obj = User.objects.get(pk=obj.pk)
+            if obj.password != original_obj.password:  # if password has changed
+                obj.set_password(obj.password)  # hash the new password
+        else:  # if this is a new user
+            obj.set_password(obj.password)  # hash the password
+        super().save_model(request, obj, form, change)
+ # Unregister the default User admin
+admin.site.register(User, UserAdmin)  # Register the custom User admin
 
 
 class BasicUserAdmin(admin.ModelAdmin):

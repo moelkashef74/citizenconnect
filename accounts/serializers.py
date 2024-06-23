@@ -200,6 +200,12 @@ from rest_framework import serializers
 from .models import User
 
 class UserUpdateSerializer(serializers.ModelSerializer):
+
+    first_name = serializers.CharField(max_length=255, required=False)
+    last_name = serializers.CharField(max_length=255, required=False)
+    phone = serializers.CharField(max_length=255, required=False)
+    email = serializers.EmailField(required=False)
+    photo = serializers.ImageField(required=False)
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'phone', 'email', 'photo']
