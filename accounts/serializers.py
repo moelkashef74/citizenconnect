@@ -193,13 +193,13 @@ class AdminLoginSerializer(serializers.Serializer):
 
         admin = Admin.objects.filter(username=username).first()
         if admin and admin.check_password(password):
-            token = AuthToken.objects.create(admin)[1]
+            token_generator = PasswordResetTokenGenerator()
+            token = token_generator.make_token(admin)
             return {
-                'amin': admin,
+                'admin': admin,
                 'token': token
             }
         raise serializers.ValidationError("Incorrect username or password.")
-
 
 from rest_framework import serializers
 from .models import User
