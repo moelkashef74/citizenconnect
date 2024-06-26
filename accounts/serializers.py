@@ -193,7 +193,7 @@ class AdminLoginSerializer(serializers.Serializer):
 
         admin = Admin.objects.filter(username=username).first()
         if admin and admin.check_password(password):
-            token = AuthToken.objects.create(user)[1]
+            token = AuthToken.objects.create(admin)[1]
             return {
                 'amin': admin,
                 'token': token
