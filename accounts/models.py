@@ -40,7 +40,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Admin(models.Model):
     username = models.CharField(max_length=150, unique=True)
     password = models.CharField(max_length=128)
-    last_login = models.DateTimeField(blank=True, null=True)
 
     def set_password(self, raw_password):
         self.password = make_password(raw_password)
