@@ -79,4 +79,14 @@ class ReportSerializer(serializers.ModelSerializer):
         # if validated_data.get('category') == 'other':
         #     validated_data['category'] = validated_data.pop('other')
 
-        return super().create(validated_data)
+        report = super().create(validated_data)
+        # Add a notification to the report
+        if report.notification is None:
+            report.notification = []
+        report.notification.append({
+            'message': "Thank you for your report. We will review it shortly.",
+            'timestamp': datetime.now().isoformat()
+        })
+        report.save()
+
+        return report
