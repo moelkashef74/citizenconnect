@@ -13,7 +13,7 @@ fs = FileSystemStorage(location= settings.MEDIA_ROOT)
 class Report(models.Model):
     CATEGORY_CHOICES = [
         ('Environmental', 'env'),
-        ('Traffic', 'tr'),
+        ('Road', 'road'),
         ('Electric', 'elec'),
         ('other', 'Other'),
     ]

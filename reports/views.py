@@ -35,7 +35,7 @@ class CreateReport2View(APIView):
 
     def post(self, request, *args, **kwargs):
         # Set a default category here
-        default_category = 'Traffic'  # Replace with your desired default category
+        default_category = 'Road'  # Replace with your desired default category
         request.data['category'] = default_category  # Set the default category in the request data
 
         serializer = ReportSerializer(data=request.data)
@@ -165,7 +165,7 @@ class Cat1TimelineView(ListAPIView):
     serializer_class = ReportSerializer
 
 class Cat2TimelineView(ListAPIView):
-    queryset = Report.objects.filter(category="Traffic", status="solved" ).order_by('-created_at')
+    queryset = Report.objects.filter(category="Road", status="solved" ).order_by('-created_at')
     serializer_class = ReportSerializer
 
 class Cat3TimelineView(ListAPIView):

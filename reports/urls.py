@@ -3,7 +3,7 @@ from .views import ApproveReportView, CreateReport1View, CreateReport2View, Crea
 
 urlpatterns = [
     path('env/create/', CreateReport1View.as_view(), name='create_env_Report'),
-    path('traffic/create/', CreateReport2View.as_view(), name='create_traffic_Report'),
+    path('road/create/', CreateReport2View.as_view(), name='create_road_Report'),
     path('electric/create/', CreateReport3View.as_view(), name='create_electric_Report'),
     path('other/create/', CreateReportOtherView.as_view(), name='create_Report_other'),
     path('solved/timeline/', SolvedTimelineView.as_view(), name='solved_timeline'),
@@ -13,7 +13,7 @@ urlpatterns = [
     path('<str:Report_id>/reject/', RejectReportView.as_view(), name='reject-Report'),
     path('<str:Report_id>/solved/', SolvedReportView.as_view(), name='solved-Report'),
     path('env/timeline/', Cat1TimelineView.as_view(), name='env-timeline'),
-    path('traffic/timeline/', Cat2TimelineView.as_view(), name='traffic-timeline'),
+    path('road/timeline/', Cat2TimelineView.as_view(), name='road-timeline'),
     path('electric/timeline/', Cat3TimelineView.as_view(), name='electric-timeline'),
     path('other/timeline/', OtherTimelineView.as_view(), name='other-timeline'),
     path('user-reports/', UserReportsView.as_view(), name='user-reports'),
