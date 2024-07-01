@@ -21,7 +21,6 @@ class UserFieldSerializer(serializers.ModelSerializer):
 
 class ReportSerializer(serializers.ModelSerializer):
     user = UserFieldSerializer(read_only=True)
-    # other = serializers.CharField(write_only=True, required=False)
     latitude = serializers.FloatField(write_only=True, required=False)
     longitude = serializers.FloatField(write_only=True, required=False)
     location = serializers.CharField(required=False, allow_blank=True, allow_null=True)
