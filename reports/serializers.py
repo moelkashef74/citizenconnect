@@ -86,7 +86,8 @@ class ReportSerializer(serializers.ModelSerializer):
             report.notification = []
         report.notification.append({
             'message': "Thank you for your report. We will review it shortly.",
-            'timestamp': datetime.now().isoformat()
+            'timestamp': datetime.now().isoformat(),
+            'id': report.id
         })
         report.save()
 
