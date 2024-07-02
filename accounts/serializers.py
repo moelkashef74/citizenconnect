@@ -52,7 +52,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             phone=phone,
             email=email,
             password=password,
-            is_verified = False
+            is_verified = True
         )
 
         return user
