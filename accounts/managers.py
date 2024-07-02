@@ -17,7 +17,7 @@ class UserManager(BaseUserManager):
         # Check if the phone number starts with '01' or '+20'
         if phone.startswith(('010', '011', '012', '015')):
             # Check if the length of the phone number is 10 digits
-            if len(phone_digits) != 10:
+            if len(phone_digits) != 11:
                 raise ValueError(_("Please enter a valid phone number"))
             # Prepend '+2' to the phone number
             phone = '+2' + phone
