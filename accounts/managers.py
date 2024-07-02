@@ -18,16 +18,16 @@ class UserManager(BaseUserManager):
         if phone.startswith(('010', '011', '012', '015')):
             # Check if the length of the phone number is 10 digits
             if len(phone_digits) != 11:
-                raise ValueError(_("Please enter a valid phone number"))
+                raise ValueError(_("Please enter a valid phone number starts with '01' or '+20'"))
             # Prepend '+2' to the phone number
             phone = '+2' + phone
         elif phone.startswith(('+2010', '+2011', '+2012', '+2015')):
             # Check if the length of the phone number is 12 digits
             if len(phone_digits) != 12:
-                raise ValueError(_("Please enter a valid phone number"))
+                raise ValueError(_("Please enter a valid phone number starts with '01' or '+20'"))
         else:
             raise ValueError(
-                _("Please enter a valid phone number"))
+                _("Please enter a valid phone number starts with '01' or '+20'"))
 
         return phone
 
