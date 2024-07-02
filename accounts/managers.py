@@ -13,7 +13,8 @@ class UserManager(BaseUserManager):
         )
         validator(phone)
         phone_digits = ''.join(filter(str.isdigit, phone))
-        if not 10 <= len(phone_digits) <= 14:
+        if not 10 <= len(phone_digits) <= 14 or (
+                not phone_digits.startswith('01') and not phone_digits.startswith('+201')):
             raise ValueError(_("Please enter a valid phone number."))
 
         # Check if the phone number starts with '010'
