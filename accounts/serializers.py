@@ -220,3 +220,19 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.photo = validated_data.get('photo', instance.photo)
         instance.save()
         return instance
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    confirm_password = serializers.CharField(required=True)
+
+    def validate(self, data):
+        if data['new_password'] != data['confirm_password']:
+            raise serializers.ValidationError({"confirm_password": "Password fields didn't match."})
+        return data
+
+    def validate_current_password(self, value):
+        if not self.context['request'].user.check_password(value):
+            raise serializers.ValidationError({"current_password": "Current password is not correct"})
+        return value

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.generics import GenericAPIView
-from .serializers import UserRegisterSerializer, LoginSerializer,SetNewPasswordSerializer,PasswordResetRequestSerializer, AdminLoginSerializer, VerifyOTPSerializer, UserUpdateSerializer
+from .serializers import UserRegisterSerializer, LoginSerializer,SetNewPasswordSerializer,PasswordResetRequestSerializer, AdminLoginSerializer, VerifyOTPSerializer, UserUpdateSerializer, ChangePasswordSerializer
 from django.core.cache import cache
 from rest_framework.response import Response
 from rest_framework import status
@@ -182,3 +182,14 @@ class UserUpdateView(generics.UpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, *args, **kwargs):
+        serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            request.user.set_password(serializer.validated_data['new_password'])
+            request.user.save()
+            return Response({"message": "Password updated successfully"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
