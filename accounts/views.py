@@ -194,13 +194,3 @@ class ChangePasswordView(APIView):
             return Response({"message": "Password updated successfully"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class LastSolvedReportView(APIView):
-    def get(self, request, *args, **kwargs):
-        categories = dict(Report.CATEGORY_CHOICES).values()
-        data = []
-        for category in categories:
-            last_solved_report = Report.objects.filter(category=category, status='solved').first()
-            if last_solved_report:
-                serializer = ReportSerializer(last_solved_report)
-                data.append(serializer.data)
-        return Response(data)

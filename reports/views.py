@@ -216,3 +216,14 @@ class NotificationView(APIView):
         notifications.sort(key=lambda x: x['timestamp'], reverse=True)
 
         return Response(notifications)
+
+class LastSolvedReportView(APIView):
+    def get(self, request, *args, **kwargs):
+        categories = dict(Report.CATEGORY_CHOICES).values()
+        data = []
+        for category in categories:
+            last_solved_report = Report.objects.filter(category=category, status='solved').first()
+            if last_solved_report:
+                serializer = ReportSerializer(last_solved_report)
+                data.append(serializer.data)
+        return Response(data)
