@@ -219,7 +219,7 @@ class NotificationView(APIView):
 
 class LastSolvedReportView(APIView):
     def get(self, request, *args, **kwargs):
-        categories = dict(Report.CATEGORY_CHOICES).values()
+        categories = dict(Report.CATEGORY_CHOICES).keys()  # Use the database values
         data = []
         for category in categories:
             last_solved_report = Report.objects.filter(category=category, status='solved').first()
