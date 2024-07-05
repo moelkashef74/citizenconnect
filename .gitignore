@@ -5,6 +5,7 @@
 *.log
 *.pot
 *.pyc
+media
 __pycache__/
 local_settings.py
 
