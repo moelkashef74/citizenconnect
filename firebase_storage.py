@@ -20,3 +20,14 @@ class FirebaseStorage(Storage):
 
     def url(self, name):
         return self.storage.child(name).get_url(None)
+
+    def exists(self, name):
+        """
+        Check if a file exists in Firebase storage.
+        """
+        try:
+            # Try to get the file from Firebase storage.
+            self.storage.child(name).get_url(None)
+            return True
+        except:
+            return False
