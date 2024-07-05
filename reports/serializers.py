@@ -8,7 +8,7 @@ from datetime import datetime
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'phone', 'first_name', 'last_name']  # Add other fields you want to display
+        fields = ['email', 'phone', 'first_name', 'last_name', 'photo']  # Add other fields you want to display
 
 class UserFieldSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
