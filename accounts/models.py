@@ -7,13 +7,15 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
+from firebase_storage import FirebaseStorage
 
 
-fs = FileSystemStorage(location= settings.MEDIA_ROOT)
+def get_firebase_storage():
+    return FirebaseStorage()
 
 class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, verbose_name=_("First Name"))
-    photo = models.ImageField(upload_to='user_photos/', blank=True, null=True,storage=fs, verbose_name=_("Profile Picture"))
+    photo = models.ImageField(upload_to='user_photos/', blank=True, null=True,storage=get_firebase_storage, verbose_name=_("Profile Picture"))
     last_name = models.CharField(max_length=100, verbose_name=_("Last Name"))
     email = models.EmailField(max_length=255, unique=True, verbose_name=_("Email Address"))
     phone = models.CharField(max_length=14, unique=True, primary_key=True, verbose_name=_('Phone Number'))
