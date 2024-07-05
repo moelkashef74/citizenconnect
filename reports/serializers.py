@@ -10,15 +10,18 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['email', 'phone', 'first_name', 'last_name', 'photo']  # Add other fields you want to display
 
-class UserFieldSerializer(serializers.ModelSerializer):
-    full_name = serializers.SerializerMethodField()
+class UserSerializer(serializers.ModelSerializer):
+    photo = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['phone', 'full_name']
+        fields = ['email', 'phone', 'first_name', 'last_name', 'photo']
 
-    def get_full_name(self, obj):
-        return obj.get_full_name        
+    def get_photo(self, obj):
+        if obj.photo:
+            return 'https://citizenconnect-plhr.onrender.com' + obj.photo.url
+        else:
+            return None
 
 class ReportSerializer(serializers.ModelSerializer):
     user = UserFieldSerializer(read_only=True)
