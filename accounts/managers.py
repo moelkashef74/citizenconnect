@@ -3,7 +3,6 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email, RegexValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from .models import User
 
 class UserManager(BaseUserManager):
     def phone_number_validator(self, phone):
@@ -51,9 +50,9 @@ class UserManager(BaseUserManager):
             raise ValueError(_("An email is required"))
         self.email_validator(email)
 
-        User = apps.get_model('accounts', 'User')
+
         # Check if a user with the provided phone number already exists
-        if User.objects.filter(phone=phone).exists():
+        if self.model.objects.filter(phone=phone).exists():
             raise ValueError(_("A user with this phone number already exists."))
 
         phone = self.phone_number_validator(phone)
