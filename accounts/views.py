@@ -31,40 +31,40 @@ class RegisterUserView(GenericAPIView):
     def post(self, request):
         user_data=request.data
         serializer=self.serializer_class(data=user_data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            user=serializer.data
+        try:
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                user=serializer.data
 
-            # generate OTP
-            otp = randint(100000, 999999)
+                # generate OTP
+                otp = randint(100000, 999999)
 
-            # store OTP in cache
-            cache.set(user['phone'], otp, 300)  # OTP expires after 300 seconds (5 minutes)
+                # store OTP in cache
+                cache.set(user['phone'], otp, 300)  # OTP expires after 300 seconds (5 minutes)
 
-            # send OTP via SMS
-            client = vonage.Client(key="61ed90e4", secret="zOKWwmXD2VkcrveK")
-            sms = vonage.Sms(client)
+                # send OTP via SMS
+                client = vonage.Client(key="61ed90e4", secret="zOKWwmXD2VkcrveK")
+                sms = vonage.Sms(client)
 
-            responseData = sms.send_message(
-                {
-                    "from": "Vonage APIs",
-                    "to": user['phone'],
-                    "text":f"ahoy  {user['get_full_name']} Your OTP is: {otp}",
-                }
-            )
+                responseData = sms.send_message(
+                    {
+                        "from": "Vonage APIs",
+                        "to": user['phone'],
+                        "text":f"ahoy  {user['get_full_name']} Your OTP is: {otp}",
+                    }
+                )
 
-            if responseData["messages"][0]["status"] == "0":
-                print("Message sent successfully.")
-            else:
-                print(f"Message failed with error: {responseData['messages'][0]['error-text']}")
+                if responseData["messages"][0]["status"] == "0":
+                    print("Message sent successfully.")
+                else:
+                    print(f"Message failed with error: {responseData['messages'][0]['error-text']}")
 
-            return Response({
-                'data':user,
-                'message':f'Hi, thanks for signing up. We have sent an OTP to your phone number for verification.'
-            }, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+                return Response({
+                    'data':user,
+                    'message':f'Hi, thanks for signing up. We have sent an OTP to your phone number for verification.'
+                }, status=status.HTTP_201_CREATED)
+        except serializers.ValidationError as e:
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
 
 class VerifyOTPView(GenericAPIView):
     serializer_class = VerifyOTPSerializer
