@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email, RegexValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from .models import User
 
 class UserManager(BaseUserManager):
     def phone_number_validator(self, phone):
