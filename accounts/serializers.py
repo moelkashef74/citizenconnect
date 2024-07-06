@@ -36,9 +36,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         if password != password2:
             raise serializers.ValidationError("Passwords do not match")
 
-        phone = attrs.get('phone', '')
-        if User.objects.filter(phone=phone).exists():
-            raise serializers.ValidationError("A user with this phone number already exists.")
         return attrs
 
     def create(self, validated_data):
@@ -47,6 +44,10 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         phone = validated_data.get('phone')
         email = validated_data.get('email')
         password = validated_data.get('password')
+
+        # Check if a user with the provided phone number already exists
+        if User.objects.filter(phone=phone).exists():
+            raise serializers.ValidationError("A user with this phone number already exists.")
 
         try:
             user = User.objects.create_user(
