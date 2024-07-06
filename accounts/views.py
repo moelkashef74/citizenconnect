@@ -64,6 +64,8 @@ class RegisterUserView(GenericAPIView):
                     'data':user,
                     'message':f'Hi, thanks for signing up. We have sent an OTP to your phone number for verification.'
                 }, status=status.HTTP_201_CREATED)
+        except IntegrityError:
+            return Response({'error': 'The number is already exists'}, status=status.HTTP_400_BAD_REQUEST)
         except ValidationError as e:
             return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
 
