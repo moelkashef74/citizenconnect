@@ -50,6 +50,10 @@ class UserManager(BaseUserManager):
             raise ValueError(_("An email is required"))
         self.email_validator(email)
 
+        # Check if a user with the provided phone number already exists
+        if User.objects.filter(phone=phone).exists():
+            raise ValueError(_("A user with this phone number already exists."))
+
         phone = self.phone_number_validator(phone)
         user = self.model(first_name=first_name, last_name=last_name, phone=phone, email=email,date_joined=timezone.now(), **extra_fields)
         user.set_password(password)
