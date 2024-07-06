@@ -39,6 +39,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        print("Create method called")
         first_name = validated_data.get('first_name')
         last_name = validated_data.get('last_name')
         phone = validated_data.get('phone')
