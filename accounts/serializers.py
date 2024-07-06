@@ -48,17 +48,20 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         email = validated_data.get('email')
         password = validated_data.get('password')
 
-
-        user = User.objects.create_user(
-            first_name=first_name,
-            last_name=last_name,
-            phone=phone,
-            email=email,
-            password=password,
-            is_verified = True,
-        )
+        try:
+            user = User.objects.create_user(
+                first_name=first_name,
+                last_name=last_name,
+                phone=phone,
+                email=email,
+                password=password,
+                is_verified = True,
+            )
+        except ValidationError as e:
+            raise serializers.ValidationError(e.message_dict)
 
         return user
+
 
 class VerifyOTPSerializer(serializers.Serializer):
     phone = serializers.CharField()
