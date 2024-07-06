@@ -16,18 +16,18 @@ class UserManager(BaseUserManager):
 
         # Check if the phone number starts with '01' or '+20'
         if phone.startswith(('010', '011', '012', '015')):
-            # Check if the length of the phone number is 10 digits
+            # Check if the length of the phone number is 11 digits
             if len(phone_digits) != 11:
-                raise ValueError(_("Please enter a valid phone number starts with '01' or '+20'"))
+                raise ValueError(_("Please enter a valid phone number that starts with '01' or '+20'"))
             # Prepend '+2' to the phone number
             phone = '+2' + phone
         elif phone.startswith(('+2010', '+2011', '+2012', '+2015')):
             # Check if the length of the phone number is 12 digits
             if len(phone_digits) != 12:
-                raise ValueError(_("Please enter a valid phone number starts with '01' or '+20'"))
+                raise ValueError(_("Please enter a valid phone number that starts with '01' or '+20'"))
         else:
             raise ValueError(
-                _("Please enter a valid phone number starts with '01' or '+20'"))
+                _("Please enter a valid phone number that starts with '01' or '+20'"))
 
         return phone
 
@@ -40,7 +40,8 @@ class UserManager(BaseUserManager):
     def create_user(self, first_name, last_name, phone, email, password, **extra_fields):
         if not phone:
             raise ValueError(_("A phone number is required"))
-        self.phone_number_validator(phone)
+        if self.model.objects.filter(phone=phone).exists():
+            raise ValueError(_("A user with this phone number already exists."))
 
         if not first_name:
             raise ValueError(_("The first name is required"))
@@ -48,15 +49,11 @@ class UserManager(BaseUserManager):
             raise ValueError(_("The last name is required"))
         if not email:
             raise ValueError(_("An email is required"))
-        self.email_validator(email)
-
-
-        # Check if a user with the provided phone number already exists
-        if self.model.objects.filter(phone=phone).exists():
-            raise ValueError(_("A user with this phone number already exists."))
 
         phone = self.phone_number_validator(phone)
-        user = self.model(first_name=first_name, last_name=last_name, phone=phone, email=email,date_joined=timezone.now(), **extra_fields)
+        email = self.email_validator(email)
+
+        user = self.model(first_name=first_name, last_name=last_name, phone=phone, email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
