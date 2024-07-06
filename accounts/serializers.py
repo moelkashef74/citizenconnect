@@ -56,7 +56,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             phone=phone,
             email=email,
             password=password,
-            is_verified = True
+            is_verified = True,
+            date_joined = timezone.now(),
         )
 
         return user
