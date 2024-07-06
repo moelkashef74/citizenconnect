@@ -51,7 +51,6 @@ class UserManager(BaseUserManager):
             raise ValueError(_("An email is required"))
 
         phone = self.phone_number_validator(phone)
-        email = self.email_validator(email)
 
         user = self.model(first_name=first_name, last_name=last_name, phone=phone, email=email, **extra_fields)
         user.set_password(password)
