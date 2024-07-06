@@ -6,10 +6,8 @@ import random
 import string
 from accounts.models import User
 from django.db.models import JSONField
-from firebase_storage import FirebaseStorage
+from django.core.files.storage import default_storage
 
-def get_firebase_storage():
-    return FirebaseStorage()
 
 
 class Report(models.Model):
@@ -21,7 +19,7 @@ class Report(models.Model):
     ]
 
     id = models.CharField(primary_key=True, max_length=10, editable=False)
-    image = models.ImageField(upload_to="reports/", storage=get_firebase_storage,)
+    image = models.ImageField(upload_to="reports/")
     description = models.TextField()
     location = models.TextField()
     status = models.CharField(max_length=20, default="reported")

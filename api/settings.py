@@ -230,13 +230,10 @@ MEDIA_ROOT = BASE_DIR / "media"
 #         },
 #     },
 # }
-FIREBASE_CONFIG = {
-    "apiKey": "AIzaSyBnrUnCNKJkpFWMVi0ImURfhNRsp0VacwU",
-    "authDomain": "citizensconnect-9d256.firebaseapp.com",
-    "databaseURL": "https://citizensconnect-9d256-default-rtdb.firebaseio.com",
-    "projectId": "citizensconnect-9d256",
-    "storageBucket": "citizensconnect-9d256.appspot.com",
-    "messagingSenderId": "1091785972951",
-    "appId": "1:1091785972951:web:975238d4d414d7605fe492",
-    "measurementId": "G-PWJV67DH6C",
+DEFAULT_FILE_STORAGE = 'django_b2.storage.B2Storage'
+
+B2_ACCOUNT_INFO = {
+    'accountId': '00530ac861aea5e0000000001',
+    'applicationKey': 'K005k/weWythc+HX51EQYNexJvba+kM',
+    'bucketName': 'CitizenConnect',
 }
