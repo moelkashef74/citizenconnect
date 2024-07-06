@@ -36,10 +36,11 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         if password != password2:
             raise serializers.ValidationError("Passwords do not match")
 
+        if User.objects.filter(phone=attrs['phone']).exists():
+            raise serializers.ValidationError("A user with this phone number already exists.")
         return attrs
 
     def create(self, validated_data):
-        print("Create method called")
         first_name = validated_data.get('first_name')
         last_name = validated_data.get('last_name')
         phone = validated_data.get('phone')
