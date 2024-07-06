@@ -62,7 +62,8 @@ class RegisterUserView(GenericAPIView):
                 'data':user,
                 'message':f'Hi, thanks for signing up. We have sent an OTP to your phone number for verification.'
             }, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 class VerifyOTPView(GenericAPIView):
