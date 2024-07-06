@@ -233,6 +233,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 FIREBASE_CONFIG = {
     "apiKey": "AIzaSyBnrUnCNKJkpFWMVi0ImURfhNRsp0VacwU",
     "authDomain": "citizensconnect-9d256.firebaseapp.com",
+    "databaseURL": "https://citizensconnect-9d256-default-rtdb.firebaseio.com",
     "projectId": "citizensconnect-9d256",
     "storageBucket": "citizensconnect-9d256.appspot.com",
     "messagingSenderId": "1091785972951",
