@@ -230,6 +230,9 @@ MEDIA_ROOT = BASE_DIR / "media"
 #         },
 #     },
 # }
+B2_APP_KEY_ID = '00530ac861aea5e0000000001'
+B2_APP_KEY = 'K005k/weWythc+HX51EQYNexJvba+kM'
+B2_BUCKET_NAME = 'CitizenConnect'
 DEFAULT_FILE_STORAGE = 'django_b2.storage.B2Storage'
 
 B2_ACCOUNT_INFO = {
