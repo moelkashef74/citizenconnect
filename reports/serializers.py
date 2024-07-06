@@ -12,6 +12,10 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['email', 'phone', 'first_name', 'last_name', 'photo']
 
+    def get_photo(self, obj):
+
+       return obj.photo.url
+
 class UserFieldSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
 
