@@ -12,11 +12,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['email', 'phone', 'first_name', 'last_name', 'photo']
 
-    def get_photo(self, obj):
-        if obj.photo:
-            return 'https://citizenconnect-plhr.onrender.com' + obj.photo.url
-        else:
-            return None
 class UserFieldSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
 
