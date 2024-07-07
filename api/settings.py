@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'api.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         # Replace this value with your local database's connection string.
-        default='postgresql://db_hbhh_user:7Gm0HmMA5s2fHcnJHkMuf8EQM4XUI9em@dpg-cq4vj1g8fa8c73fvjr5g-a.oregon-postgres.render.com:5432/db_hbhh?sslmode=require',
+        default='postgresql://db_j1m6_user:vSFReTVnic6jRpNfRi95yn77UMSQVqli@dpg-cq51fduehbks73bi3ne0-a.oregon-postgres.render.com:5432/db_j1m6',
     )
         #
         # 'ENGINE': 'django.db.backends.postgresql',
