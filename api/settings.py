@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'api.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         # Replace this value with your local database's connection string.
-        default='postgresql://db_4roh_user:BoS2BVCj6W7dImaO2xeFTkYmCUnt37XD@dpg-cq51oatds78s73cqsns0-a.oregon-postgres.render.com:5432/db_4roh',
+        default=env('POSTGRES_URL'),
         conn_max_age=600
     )
 }
