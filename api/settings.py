@@ -98,16 +98,8 @@ DATABASES = {
     'default': dj_database_url.config(
         # Replace this value with your local database's connection string.
         default='postgresql://db_4roh_user:BoS2BVCj6W7dImaO2xeFTkYmCUnt37XD@dpg-cq51oatds78s73cqsns0-a.oregon-postgres.render.com:5432/db_4roh',
+        conn_max_age=600
     )
-        #
-        # 'ENGINE': 'django.db.backends.postgresql',
-        # 'URL': env('POSTGRES_URL'),
-        # 'NAME': env('PGNAME'),
-        # 'USER': env('PGUSER'),
-        # 'PASSWORD': env('POSTGRES_PASSWORD'),
-        # 'HOST': env('PGHOST'),
-        # 'PORT': env('PGPORT'),
-
 }
 
 AUTH_USER_MODEL='accounts.User'
