@@ -95,7 +95,10 @@ WSGI_APPLICATION = 'api.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default=env('DATABASE_URL'))
+    'default': dj_database_url.config(
+        # Replace this value with your local database's connection string.
+        default='postgresql://db_hbhh_user:7Gm0HmMA5s2fHcnJHkMuf8EQM4XUI9em@dpg-cq4vj1g8fa8c73fvjr5g-a.oregon-postgres.render.com:5432/db_hbhh?sslmode=require',
+    )
         #
         # 'ENGINE': 'django.db.backends.postgresql',
         # 'URL': env('POSTGRES_URL'),
