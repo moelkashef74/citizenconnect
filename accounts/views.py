@@ -18,6 +18,7 @@ from random import randint
 from rest_framework import generics
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
+from rest_framework.generics import DestroyAPIView
 
 
 
@@ -198,4 +199,10 @@ class ChangePasswordView(APIView):
             request.user.save()
             return Response({"message": "Password updated successfully"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class DeleteAccountView(DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
 
