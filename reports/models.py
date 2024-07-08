@@ -32,6 +32,7 @@ class Report(models.Model):
         return self.description
 
     def save(self, *args, **kwargs):
+        self.location = smart_text(self.location)
         if not self.id:
             while True:
                 random_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
