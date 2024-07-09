@@ -197,7 +197,7 @@ class UserReportsView(APIView):
         # Filter reports by the current authenticated user
         reports = Report.objects.filter(user=request.user).order_by('-created_at')
         serializer = ReportSerializer(reports, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, content_type='application/json; charset=utf-8')
     
 
 class UserDetailView(APIView):
