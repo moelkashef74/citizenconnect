@@ -7,6 +7,7 @@ import string
 from accounts.models import User
 from django.db.models import JSONField
 from django.core.files.storage import default_storage
+from django.utils.encoding import smart_str
 
 
 
@@ -32,6 +33,8 @@ class Report(models.Model):
         return self.description
 
     def save(self, *args, **kwargs):
+        self.description = smart_str(self.description)
+        self.location = smart_str(self.location)
         if not self.id:
             while True:
                 random_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
