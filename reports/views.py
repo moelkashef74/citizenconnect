@@ -25,9 +25,9 @@ class CreateReport1View(APIView):
         if serializer.is_valid():
             # Assign the report to the current user before saving
             serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, content_type='application/json; charset=utf-8')
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST, content_type='application/json; charset=utf-8')
 
 
         
@@ -44,9 +44,9 @@ class CreateReport2View(APIView):
         if serializer.is_valid():
             # Assign the report to the current user before saving
             serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, content_type='application/json; charset=utf-8')
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST, content_type='application/json; charset=utf-8')
         
 class CreateReport3View(APIView):
     parser_classes = (MultiPartParser, FormParser)
@@ -61,9 +61,9 @@ class CreateReport3View(APIView):
         if serializer.is_valid():
             # Assign the report to the current user before saving
             serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, content_type='application/json; charset=utf-8')
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST, content_type='application/json; charset=utf-8')
         
 class CreateReportOtherView(APIView):
     parser_classes = (MultiPartParser, FormParser)
@@ -78,9 +78,9 @@ class CreateReportOtherView(APIView):
         if serializer.is_valid():
             # Assign the report to the current user before saving
             serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, content_type='application/json; charset=utf-8')
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST, content_type='application/json; charset=utf-8')
         
 
 
