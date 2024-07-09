@@ -17,9 +17,17 @@ class CreateReport1View(APIView):
     permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
 
     def post(self, request, *args, **kwargs):
+
         # Set a default category here
         default_category = 'Environmental'  # Replace with your desired default category
         request.data['category'] = default_category  # Set the default category in the request data
+
+        for field in ['description', 'location']:
+            if field in request.data and isinstance(request.data[field], str):
+                try:
+                    request.data[field] = request.data[field].encode('latin1').decode('utf-8')
+                except UnicodeDecodeError:
+                    return Response({'error': f'Invalid UTF-8 string in {field}'}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = ReportSerializer(data=request.data)
         if serializer.is_valid():
